@@ -1,76 +1,105 @@
 <?php
+
 /*
-  * This file is part of the MailTemplateEditor plugin
-  *
-  * Copyright (C) 2016 LOCKON CO.,LTD. All Rights Reserved.
-  *
-  * For the full copyright and license information, please view the LICENSE
-  * file that was distributed with this source code.
-  */
+ * This file is part of EC-CUBE
+ *
+ * Copyright(c) LOCKON CO.,LTD. All Rights Reserved.
+ *
+ * http://www.lockon.co.jp/
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
 namespace Plugin\MailTemplateEditor\Controller;
 
-use Eccube\Application;
 use Eccube\Controller\AbstractController;
-use Eccube\Util\Cache;
-use Eccube\Util\Str;
+use Eccube\Util\CacheUtil;
+use Eccube\Util\StringUtil;
+use Plugin\MailTemplateEditor\Form\Type\MailTemplateType;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
+use Symfony\Component\Finder\SplFileInfo;
 use Symfony\Component\HttpFoundation\Request;
 
 class MailTemplateController extends AbstractController
 {
     /**
+     * @var CacheUtil
+     */
+    private $CacheUtil;
+
+    /**
+     * MailTemplateController constructor.
+     *
+     * @param CacheUtil $CacheUtil
+     */
+    public function __construct(CacheUtil $CacheUtil)
+    {
+        $this->CacheUtil = $CacheUtil;
+    }
+
+    /**
      * メールファイル管理一覧画面.
      *
-     * @param Application $app
      * @param Request     $request
      *
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return array
+     *
+     * @Route("%eccube_admin_route%/plugin/mailtemplateeditor/mail", name="plugin_MailTemplateEditor_mail")
+     * @Template("MailTemplateEditor/Resource/template/admin/mail.twig")
      */
-    public function index(Application $app, Request $request)
+    public function index(Request $request)
     {
         // Mailディレクトリ(app/template、Resource/template)からメールファイルを取得
+        /** @var Finder $finder */
         $finder = Finder::create()->depth(0);
-        $mailDir = $app['config']['template_default_realdir'].'/Mail';
+        $mailDir = $this->eccubeConfig['eccube_theme_front_default_dir'].'/Mail';
 
-        $files = array();
+        $files = [];
+        /** @var SplFileInfo $file */
         foreach ($finder->in($mailDir) as $file) {
-            $files[$file->getFilename()] = $file->getFilename();
+            $files[$file->getFilename()] = $file->getBasename('.twig');
         }
 
-        $mailDir = $app['config']['template_realdir'].'/Mail';
+        $mailDir = $this->eccubeConfig['eccube_theme_front_dir'].'/Mail';
         if (file_exists($mailDir)) {
             foreach ($finder->in($mailDir) as $file) {
-                $files[$file->getFilename()] = $file->getFilename();
+                $files[$file->getFilename()] = $file->getBasename('.twig');
             }
         }
 
-        return $app->render('MailTemplateEditor/Resource/template/admin/mail.twig', array(
+        return [
             'files' => $files,
-        ));
+        ];
     }
 
     /**
      * メール編集画面.
      *
-     * @param Application $app
      * @param Request     $request
      * @param $name
      *
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response|array
+     * @Route("%eccube_admin_route%/plugin/mailtemplateeditor/mail/{name}/edit", name="plugin_MailTemplateEditor_mail_edit")
+     * @Template("MailTemplateEditor/Resource/template/admin/mail_edit.twig")
      */
-    public function edit(Application $app, Request $request, $name)
+    public function edit(Request $request, $name)
     {
-        $readPaths = array(
-            $app['config']['template_realdir'],
-            $app['config']['template_default_realdir'],
-        );
+        $readPaths = [
+            // customize folder first
+            $this->eccubeConfig['eccube_theme_front_dir'],
+            // default folder after that
+            $this->eccubeConfig['eccube_theme_front_default_dir'],
+        ];
 
         $fs = new Filesystem();
         $tplData = null;
+        $extension = '.twig';
         foreach ($readPaths as $readPath) {
-            $filePath = $readPath.'/Mail/'.$name;
+            $filePath = $readPath.'/Mail/'.$name.$extension;
             if ($fs->exists($filePath)) {
                 $tplData = file_get_contents($filePath);
                 break;
@@ -78,12 +107,12 @@ class MailTemplateController extends AbstractController
         }
 
         if (!$tplData) {
-            $app->addError('admin.mailtemplateeditor.mail.edit.error', 'admin');
+            $this->addError('admin.mailtemplateeditor.mail.edit.error', 'admin');
 
-            return $app->redirect($app->url('plugin_MailTemplateEditor_mail'));
+            return $this->redirectToRoute('plugin_MailTemplateEditor_mail');
         }
 
-        $builder = $app['form.factory']->createBuilder('admin_mail_template');
+        $builder = $this->formFactory->createBuilder(MailTemplateType::class);
 
         $form = $builder->getForm();
 
@@ -92,52 +121,54 @@ class MailTemplateController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-
             // ファイル生成・更新
-            $filePath = $app['config']['template_realdir'].'/Mail/'.$name;
+            // save to customize folder
+            $filePath = $this->eccubeConfig['eccube_theme_front_dir'].'/Mail/'.$name.$extension;
 
             $fs = new Filesystem();
             $pageData = $form->get('tpl_data')->getData();
-            $pageData = Str::convertLineFeed($pageData);
+            $pageData = StringUtil::convertLineFeed($pageData);
             $fs->dumpFile($filePath, $pageData);
 
-            $app->addSuccess('admin.register.complete', 'admin');
-
             // twig キャッシュの削除.
-            Cache::clear($app, false, true);
+            $this->CacheUtil->clearCache();
 
-            return $app->redirect($app->url('plugin_MailTemplateEditor_mail_edit', array(
+            $this->addSuccess('admin.register.complete', 'admin');
+
+            return $this->redirectToRoute('plugin_MailTemplateEditor_mail_edit', [
                 'name' => $name,
-            )));
+            ]);
         }
 
-        return $app->render('MailTemplateEditor/Resource/template/admin/mail_edit.twig', array(
+        return [
             'name' => $name,
             'form' => $form->createView(),
-        ));
+        ];
     }
 
     /**
      * メールファイル初期化処理.
      *
-     * @param Application $app
      * @param Request     $request
      * @param $name
      *
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     * @Route("%eccube_admin_route%/plugin/mailtemplateeditor/mail/{name}/reedit", name="plugin_MailTemplateEditor_mail_reedit")
      */
-    public function reedit(Application $app, Request $request, $name)
+    public function reedit(Request $request, $name)
     {
-        $this->isTokenValid($app);
+        $this->isTokenValid();
 
-        $readPaths = array(
-            $app['config']['template_default_realdir'],
-        );
+        $readPaths = [
+            // get old data from default folder
+            $this->eccubeConfig['eccube_theme_front_default_dir'],
+        ];
 
         $fs = new Filesystem();
         $tplData = null;
+        $extension = '.twig';
         foreach ($readPaths as $readPath) {
-            $filePath = $readPath.'/Mail/'.$name;
+            $filePath = $readPath.'/Mail/'.$name.$extension;
             if ($fs->exists($filePath)) {
                 $tplData = file_get_contents($filePath);
                 break;
@@ -145,28 +176,26 @@ class MailTemplateController extends AbstractController
         }
 
         if (!$tplData) {
-            $app->addError('admin.mailtemplateeditor.mail.edit.error', 'admin');
+            $this->addError('admin.mailtemplateeditor.mail.edit.error', 'admin');
 
-            return $app->redirect($app->url('plugin_MailTemplateEditor_mail'));
+            return $this->redirectToRoute('plugin_MailTemplateEditor_mail');
         }
 
-        $builder = $app['form.factory']->createBuilder('admin_mail_template');
+        $builder = $this->formFactory->createBuilder(MailTemplateType::class);
 
         $form = $builder->getForm();
 
         $form->get('tpl_data')->setData($tplData);
 
         // ファイル生成・更新
-        $filePath = $app['config']['template_realdir'].'/Mail/'.$name;
+        // set to customize folder
+        $filePath = $this->eccubeConfig['eccube_theme_front_dir'].'/Mail/'.$name.$extension;
 
         $fs = new Filesystem();
         $fs->dumpFile($filePath, $tplData);
 
-        $app->addSuccess('admin.mailtemplateeditor.mail.init.complete', 'admin');
+        $this->addSuccess('admin.mailtemplateeditor.mail.init.complete', 'admin');
 
-        return $app->render('MailTemplateEditor/Resource/template/admin/mail_edit.twig', array(
-            'name' => $name,
-            'form' => $form->createView(),
-        ));
+        return $this->redirectToRoute('plugin_MailTemplateEditor_mail_edit', ['name' => $name]);
     }
 }

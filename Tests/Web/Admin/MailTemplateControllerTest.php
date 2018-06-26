@@ -1,12 +1,15 @@
 <?php
+
 /*
-  * This file is part of the MailTemplateEditor plugin
-  *
-  * Copyright (C) 2016 LOCKON CO.,LTD. All Rights Reserved.
-  *
-  * For the full copyright and license information, please view the LICENSE
-  * file that was distributed with this source code.
-  */
+ * This file is part of EC-CUBE
+ *
+ * Copyright(c) LOCKON CO.,LTD. All Rights Reserved.
+ *
+ * http://www.lockon.co.jp/
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
 namespace Plugin\MailTemplateEditor\Tests\Web\Admin;
 
@@ -18,7 +21,7 @@ class MailTemplateControllerTest extends AbstractAdminWebTestCase
     {
         $client = $this->client;
         $client->request('GET',
-            $this->app->url('plugin_MailTemplateEditor_mail')
+            $this->generateUrl('plugin_MailTemplateEditor_mail')
         );
         $this->assertTrue($client->getResponse()->isSuccessful());
     }
@@ -28,7 +31,7 @@ class MailTemplateControllerTest extends AbstractAdminWebTestCase
         $client = $this->client;
 
         $client->request('GET',
-            $this->app->url('plugin_MailTemplateEditor_mail_edit', array('name' => 'order.twig'))
+            $this->generateUrl('plugin_MailTemplateEditor_mail_edit', ['name' => 'order'])
         );
         $this->assertTrue($client->getResponse()->isSuccessful());
     }
@@ -39,20 +42,20 @@ class MailTemplateControllerTest extends AbstractAdminWebTestCase
 
         $client->request(
             'POST',
-            $this->app->url('plugin_MailTemplateEditor_mail_edit', array('name' => 'order.twig')),
-            array(
-                'admin_mail_template' => array(
+            $this->generateUrl('plugin_MailTemplateEditor_mail_edit', ['name' => 'order']),
+            [
+                'admin_mail_template' => [
                     'tpl_data' => 'testtest',
                     '_token' => 'dummy',
-                ),
-                'name' => 'order.twig',
-            )
+                ],
+                'name' => 'order',
+            ]
         );
 
-        $this->assertTrue($client->getResponse()->isRedirect($this->app->url('plugin_MailTemplateEditor_mail_edit', array('name' => 'order.twig'))));
+        $this->assertTrue($client->getResponse()->isRedirect($this->generateUrl('plugin_MailTemplateEditor_mail_edit', ['name' => 'order'])));
 
         $this->expected = 'testtest';
-        $this->actual = file_get_contents($this->app['config']['template_realdir'].'/Mail/order.twig');
+        $this->actual = file_get_contents($this->eccubeConfig['eccube_theme_front_dir'].'/Mail/order.twig');
         $this->verify();
     }
 
@@ -60,15 +63,15 @@ class MailTemplateControllerTest extends AbstractAdminWebTestCase
     {
         $client = $this->client;
 
-        $crawler = $client->request(
+        $client->request(
             'PUT',
-            $this->app->url('plugin_MailTemplateEditor_mail_reedit', array('name' => 'order.twig'))
+            $this->generateUrl('plugin_MailTemplateEditor_mail_reedit', ['name' => 'order'])
         );
 
-        $this->assertTrue($client->getResponse()->isSuccessful());
+        $this->assertTrue($client->getResponse()->isRedirect());
 
-        $this->expected = file_get_contents($this->app['config']['template_default_realdir'].'/Mail/order.twig');
-        $this->actual = file_get_contents($this->app['config']['template_realdir'].'/Mail/order.twig');
+        $this->expected = file_get_contents($this->eccubeConfig['eccube_theme_front_default_dir'].'/Mail/order.twig');
+        $this->actual = file_get_contents($this->eccubeConfig['eccube_theme_front_dir'].'/Mail/order.twig');
         $this->verify();
     }
 }

@@ -1,0 +1,15 @@
+admin.mailtemplateeditor.mail.edit.error: 対象ファイルが存在しません。
+admin.mailtemplateeditor.mail.init.complete: 初期設定に戻しました。
+
+mailtemplateeditor.mail.title: メール管理
+mailtemplateeditor.mail.sub_title: コンテンツ管理
+mailtemplateeditor.mail.header: メールファイル一覧
+
+mailtemplateeditor.mail.edit.title: メール管理
+mailtemplateeditor.mail.edit.sub_title: コンテンツ管理
+mailtemplateeditor.mail.edit.header: メール編集
+mailtemplateeditor.mail.edit.header.tip: 修正時にはtwigタグの取り扱いにご注意ください。
+mailtemplateeditor.mail.edit.template_label: メール本文
+mailtemplateeditor.mail.edit.undo: 初期値に戻す
+mailtemplateeditor.mail.edit.undo.confirm_message: 本当に初期設定に戻しますか？入力されている内容は失われます。
+mailtemplateeditor.mail.edit.undo.confirm_header: 本気ですか？
