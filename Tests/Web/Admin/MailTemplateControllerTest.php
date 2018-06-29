@@ -44,7 +44,7 @@ class MailTemplateControllerTest extends AbstractAdminWebTestCase
             'POST',
             $this->generateUrl('plugin_MailTemplateEditor_mail_edit', ['name' => 'order']),
             [
-                'admin_mail_template' => [
+                'mail_template' => [
                     'tpl_data' => 'testtest',
                     '_token' => 'dummy',
                 ],
