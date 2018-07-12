@@ -27,7 +27,7 @@ class Nav implements EccubeNav
         return [
             'content' => [
                 'id' => 'mail',
-                'name' => 'メール管理',
+                'name' => 'plugin_mailtemplateeditor.nav',
                 'url' => 'plugin_MailTemplateEditor_mail',
             ],
         ];

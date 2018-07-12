@@ -49,7 +49,7 @@ class MailTemplateController extends AbstractController
      * @return array
      *
      * @Route("%eccube_admin_route%/plugin/mailtemplateeditor/mail", name="plugin_MailTemplateEditor_mail")
-     * @Template("MailTemplateEditor/Resource/template/admin/mail.twig")
+     * @Template("@MailTemplateEditor/admin/mail.twig")
      */
     public function index(Request $request)
     {
@@ -84,7 +84,7 @@ class MailTemplateController extends AbstractController
      *
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response|array
      * @Route("%eccube_admin_route%/plugin/mailtemplateeditor/mail/{name}/edit", name="plugin_MailTemplateEditor_mail_edit")
-     * @Template("MailTemplateEditor/Resource/template/admin/mail_edit.twig")
+     * @Template("@MailTemplateEditor/admin/mail_edit.twig")
      */
     public function edit(Request $request, $name)
     {
@@ -107,7 +107,7 @@ class MailTemplateController extends AbstractController
         }
 
         if (!$tplData) {
-            $this->addError('admin.mailtemplateeditor.mail.edit.error', 'admin');
+            $this->addError('plugin_mailtemplateeditor.admin.mail.edit.error', 'admin');
 
             return $this->redirectToRoute('plugin_MailTemplateEditor_mail');
         }
@@ -176,7 +176,7 @@ class MailTemplateController extends AbstractController
         }
 
         if (!$tplData) {
-            $this->addError('admin.mailtemplateeditor.mail.edit.error', 'admin');
+            $this->addError('plugin_mailtemplateeditor.admin.mail.edit.error', 'admin');
 
             return $this->redirectToRoute('plugin_MailTemplateEditor_mail');
         }
@@ -194,7 +194,7 @@ class MailTemplateController extends AbstractController
         $fs = new Filesystem();
         $fs->dumpFile($filePath, $tplData);
 
-        $this->addSuccess('admin.mailtemplateeditor.mail.init.complete', 'admin');
+        $this->addSuccess('plugin_mailtemplateeditor.admin.mail.init.complete', 'admin');
 
         return $this->redirectToRoute('plugin_MailTemplateEditor_mail_edit', ['name' => $name]);
     }

@@ -6,12 +6,12 @@ Copyright (C) 2016 LOCKON CO.,LTD. All Rights Reserved.
 For the full copyright and license information, please view the LICENSE
 file that was distributed with this source code.
 #}
-{% extends '@admin/styleguide_frame.twig' %}
+{% extends '@admin/default_frame.twig' %}
 
 {% set menus = ['content', 'mail'] %}
 
-{% block title %}{{ 'mailtemplateeditor.mail.edit.title'|trans }}{% endblock %}
-{% block sub_title %}{{ 'mailtemplateeditor.mail.edit.sub_title'|trans }}{% endblock %}
+{% block title %}{{ 'plugin_mailtemplateeditor.admin.mail.edit.title'|trans }}{% endblock %}
+{% block sub_title %}{{ 'plugin_mailtemplateeditor.admin.mail.edit.sub_title'|trans }}{% endblock %}
 
 {% form_theme form '@admin/Form/bootstrap_4_horizontal_layout.html.twig' %}
 
@@ -46,8 +46,8 @@ file that was distributed with this source code.
                 <div class="c-primaryCol">
                     <div class="card rounded border-0 mb-4">
                         <div class="card-header">
-                            <h3>{{ 'mailtemplateeditor.mail.edit.header'|trans }}</h3>
-                            <p>{{ 'mailtemplateeditor.mail.edit.header.tip'|trans }}</p>
+                            <h3>{{ 'plugin_mailtemplateeditor.admin.mail.edit.header'|trans }}</h3>
+                            <p>{{ 'plugin_mailtemplateeditor.admin.mail.edit.header.tip'|trans }}</p>
                         </div>
 
                         <div class="card-body">
@@ -65,7 +65,7 @@ file that was distributed with this source code.
                             </div>
                             <div class="row mb-2 pull-right">
                                 <a class="btn btn-default" data-toggle="modal" data-target="#undo">
-                                    {{ 'mailtemplateeditor.mail.edit.undo'|trans }}
+                                    {{ 'plugin_mailtemplateeditor.admin.mail.edit.undo'|trans }}
                                 </a>
 
                                 <div class="modal fade" id="undo" tabindex="-1" role="dialog" aria-labelledby="undo" aria-hidden="true">
@@ -73,12 +73,12 @@ file that was distributed with this source code.
                                         <div class="modal-content">
                                             <div class="modal-header">
                                                 <h5 class="modal-title font-weight-bold">
-                                                    {{ 'mailtemplateeditor.mail.edit.undo.confirm_header'|trans }}</h5>
+                                                    {{ 'plugin_mailtemplateeditor.admin.mail.edit.undo.confirm_header'|trans }}</h5>
                                                 <button class="close" type="button" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
                                             </div>
                                             <div class="modal-body text-left">
                                                 <p class="text-left">
-                                                    {{ 'mailtemplateeditor.mail.edit.undo.confirm_message'|trans }}</p>
+                                                    {{ 'plugin_mailtemplateeditor.admin.mail.edit.undo.confirm_message'|trans }}</p>
                                             </div>
                                             <div class="modal-footer">
                                                 <button class="btn btn-ec-sub" type="button" data-dismiss="modal">{{ 'common.label.cancel'|trans }}</button>

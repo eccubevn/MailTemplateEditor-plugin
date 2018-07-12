@@ -27,7 +27,7 @@ class MailTemplateType extends AbstractType
     {
         $builder
             ->add('tpl_data', TextareaType::class, [
-                'label' => trans('mailtemplateeditor.mail.edit.template_label'),
+                'label' => trans('plugin_mailtemplateeditor.admin.mail.edit.template_label'),
                 'mapped' => false,
                 'required' => true,
                 'constraints' => [

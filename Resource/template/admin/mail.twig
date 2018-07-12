@@ -6,12 +6,12 @@ Copyright (C) 2016 LOCKON CO.,LTD. All Rights Reserved.
 For the full copyright and license information, please view the LICENSE
 file that was distributed with this source code.
 #}
-{% extends '@admin/styleguide_frame.twig' %}
+{% extends '@admin/default_frame.twig' %}
 
 {% set menus = ['content', 'mail'] %}
 
-{% block title %}{{ 'mailtemplateeditor.mail.title'|trans }}{% endblock %}
-{% block sub_title %}{{ 'mailtemplateeditor.mail.sub_title'|trans }}{% endblock %}
+{% block title %}{{ 'plugin_mailtemplateeditor.admin.mail.title'|trans }}{% endblock %}
+{% block sub_title %}{{ 'plugin_mailtemplateeditor.admin.mail.sub_title'|trans }}{% endblock %}
 
 {% block main %}
     <div class="c-contentsArea__cols">
@@ -19,7 +19,7 @@ file that was distributed with this source code.
             <div class="c-primaryCol">
                 <div class="card rounded border-0 mb-4">
                     <div class="card-header">
-                        <span>{{ 'mailtemplateeditor.mail.header'|trans }}</span>
+                        <span>{{ 'plugin_mailtemplateeditor.admin.mail.header'|trans }}</span>
                     </div>
                 </div>
             </div>
