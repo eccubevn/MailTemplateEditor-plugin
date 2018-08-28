@@ -81,10 +81,10 @@ file that was distributed with this source code.
                                                     {{ 'plugin_mailtemplateeditor.admin.mail.edit.undo.confirm_message'|trans }}</p>
                                             </div>
                                             <div class="modal-footer">
-                                                <button class="btn btn-ec-sub" type="button" data-dismiss="modal">{{ 'common.label.cancel'|trans }}</button>
+                                                <button class="btn btn-ec-sub" type="button" data-dismiss="modal">{{ 'admin.common.cancel'|trans }}</button>
                                                 <a class="btn btn-ec-delete" href="{{ url('plugin_MailTemplateEditor_mail_reedit', { 'name': name}) }}" {{ csrf_token_for_anchor() }}
                                                    data-method="put" data-confirm="false">
-                                                    {{ 'common.label.execute'|trans }}
+                                                    {{ 'admin.common.execute'|trans }}
                                                 </a>
                                             </div>
                                         </div>
@@ -102,13 +102,13 @@ file that was distributed with this source code.
                         <div class="col-6">
                             <div class="c-conversionArea__leftBlockItem">
                                 <a class="c-beseLink" href="{{ url('plugin_MailTemplateEditor_mail') }}">
-                                    <i class="fa fa-backward" aria-hidden="true"></i><span>{{ 'common.label.btn.go_back'|trans }}</span></a>
+                                    <i class="fa fa-backward" aria-hidden="true"></i><span>{{ 'common.back'|trans }}</span></a>
                             </div>
                         </div>
                         <div class="col-6">
                             <div class="row align-items-center justify-content-end">
                                 <div class="col-auto">
-                                    <button type="submit" class="btn btn-primary btn-block btn-lg">{{ 'common.label.save'|trans }}</button>
+                                    <button type="submit" class="btn btn-primary btn-block btn-lg">{{ 'admin.common.save'|trans }}</button>
                                 </div>
                             </div>
                         </div>

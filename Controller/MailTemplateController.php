@@ -17,12 +17,12 @@ use Eccube\Controller\AbstractController;
 use Eccube\Util\CacheUtil;
 use Eccube\Util\StringUtil;
 use Plugin\MailTemplateEditor\Form\Type\MailTemplateType;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Annotation\Route;
 
 class MailTemplateController extends AbstractController
 {
